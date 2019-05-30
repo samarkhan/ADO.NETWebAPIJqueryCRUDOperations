@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="#" />
+    <title></title>
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ulStudents = $('#ulStudents');
+
+            //var newStudent = { Name: "Shresta Saha", City: "Meghalaya", Address: "Malad West, Mumbai" };
+
+            $('#btn').click(function ()
+            {
+                $.ajax({
+                    type: 'GET',
+                    url: 'api/student',
+                    dataType: 'json',
+                    success: function (data) {
+                        ulStudents.empty();
+                        $.each(data, function (index, val) {
+                            var $tr = $('<tr>').append(
+                                $('<td>').text(val.Id),
+                                $('<td>').text(val.Name),
+                                $('<td>').text(val.Address)
+                            ).appendTo('#ulStudents');
+                        });
+                    }
+                });
+            });
+
+            $("#studentForm").submit(function (e) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'api/student',
+                    data: $('#studentForm').serialize(),
+                    success: function (data) {
+                        console.log('Submission was successful.');
+                        alert(data);
+                    },
+                    error: function (data) {
+                        console.log('An error occurred.');
+                        alert(data);
+                    },
+                });
+                e.stopImmediatePropagation();
+                return false;
+            })
+        });
+    </script>
+</head>
+<body>
+    <input id="btn" type="button" value="Get All Students" />
+    <input id="btnClear" type="button" value="Clear Students" />
+
+    <form id="studentForm" action="/api/student" method="post">
+        Name:<input type="text" name="name">
+        <br>
+        City:<input type="text" name="city">
+        <br>
+        Address:<input type="text" name="address">
+        <br>
+        <br>
+        <input type="submit" value="Create Student">
+    </form>
+    <div id="ulStudents"></div>
+</body>
+</html>
